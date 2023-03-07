@@ -1,0 +1,32 @@
+Chương 1:
+	1.1 Tổng quan về đề tài.
+	1.2 Nội dung chuyên môn chính của đề tài
+	1.3 Bố cục báo cáo:
+
+Chương 2: Cơ sở lý thuyết về lập trình âm thanh
+	2.1 (Chèn file lý thuyết)
+	2.2 Công cụ lập trình, thư viện và nguồn dữ liệu âm thanh
+		2.2.1 Công cụ Android Studio và VSC
+		2.2.2 Thư viện Audio Players và Bloc
+		2.2.3 Nguồn dữ liệu âm thanh: (Zingmp3)
+Chương 3: Cơ sở lý thuyết về các thuật ngữ chuyên môn:
+	3.1 RESTful API (GET và POST):
+	3.2 JSON:
+	3.3 JWT:
+
+Chương 4: Cơ chế lấy nhạc từ nguồn Zingmp3:
+
+Chương 5: Setup sản phẩm, thiết kế và tiến hành lập trình:
+	5.1 Setup database MySQL:
+	5.2 Setup thư viện phía server (BE) sử dụng Nodejs + Express:
+	5.3 Setup thư viện Audio Players, Bloc, Record, Google Speech và SharedPreferences:
+	5.4 Thiết kế:
+	5.5 Lưu trạng thái đăng nhập sử dụng SharedPreferences:
+	5.6 Phát nhạc thông qua URL sử dụng cấu trúc Bloc (Bussiness logic component):
+	5.7 Download file nhạc thông qua URL:
+	5.8 Lấy lời bài hát,ghi âm và cuộn màn hình theo lời bài hát:
+	5.9 Chấm điểm karaoke:
+
+Chương 6: Tổng kết đề tài
+	6.1 Kết quả đạt được và những hạn chế
+	6.2 Tổng kết
