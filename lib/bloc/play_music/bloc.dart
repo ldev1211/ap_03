@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
-
 import 'package:ap_03_luongquocdien/network/entity/lyric/lyric_entity.dart';
 import 'package:ap_03_luongquocdien/network/route/music/music_service.dart';
 import 'package:bloc/bloc.dart';
@@ -118,33 +116,44 @@ class PlayMusicBloc extends Bloc<PlayMusicEvent, PlayMusicState> {
     });
 
     on<KaraokeEvent> ((event,emit) async {
+      emit(KaraokeState("title", "artist", "linkThumb", Duration.zero, []));
+      final id = event.id;
+      final response = await service.getLyric(id);
+      if(response.data==null) {
+        emit(KaraokeState("", "artist", "linkThumb", Duration.zero, []));
+        return;
+      }
+      print(response.data);
+      String fileLink = response.data!;
       indexScroll = 0;
       total = event.total;
-      final id = event.id;
       quality = event.quality;
       url = "http://api.mp3.zing.vn/api/streaming/audio/$id/$quality";
       player.play(UrlSource(url));
-      final response = await service.getLyric(id);
-      String fileLink = response.data;
       String s = "";
       HttpClient().getUrl(Uri.parse(fileLink))
           .then((HttpClientRequest request) => request.close())
-          .then((HttpClientResponse response) {
-        response.transform(const Utf8Decoder()).listen((event) {
+          .then((HttpClientResponse response) async {
+        response.transform(const Utf8Decoder()).listen((event) async {
           s += event;
         },);
       });
       lyrics = [];
-      await Future.delayed(const Duration(seconds: 5),(){
-        final arrLyric = s.substring(s.indexOf('[00')).split('\n');
-        for(int i=0;i<arrLyric.length;++i){
-          List<String> stringWords = arrLyric[i].substring(11).split(' ');
+      await Future.delayed(const Duration(seconds: 3),(){
+        List<String> arrLyric = s.substring(s.indexOf('[00')).split('\n');
+        for(int i=0;i<arrLyric.length-1;++i){
+          List<String> stringWords = arrLyric[i].substring(10).split(' ');
           List<Word> words = [];
-          for(int j=0;j<stringWords.length;++j){
-            final arrTime = arrLyric[i].substring(1,9).split(':');
-            words.add(Word(int.parse(arrTime[0])*60*1000+(double.parse(arrTime[1])*1000).toInt(), 0, stringWords[j]));
+          try{
+            for(int j=0;j<stringWords.length;++j){
+              final arrTime = arrLyric[i].substring(1,9).split(':');
+              words.add(Word(int.parse(arrTime[0])*60*1000+(double.parse(arrTime[1])*1000).toInt(), 0, stringWords[j]));
+            }
+            lyrics.add(Sentence(words));
+          // ignore: empty_catches
+          } catch(e){
+
           }
-          lyrics.add(Sentence(words));
         }
       });
       emit(KaraokeState(event.title, event.artist, event.linkThumb, event.total, lyrics));
@@ -159,30 +168,33 @@ class PlayMusicBloc extends Bloc<PlayMusicEvent, PlayMusicState> {
       speechToText = SpeechToText.viaServiceAccount(serviceAccount);
       player.stop();
       await record.stop();
-      // final audio = await _getAudioContent('myFile.flac');
-      // RecognizeResponse response = await speechToText.recognize(config, audio);
-      // final List<WordInfo> wordUsers = response.results[0].alternatives.toList()[0].words;
-      // int wordRightTotal = 0;int total = 0;bool isFound = false;
-      // for(int i=0;i<lyrics.length;++i) total += lyrics[i].words.length;
-      // for(int i=0;i<wordUsers.length;++i){
-      //   for(int j=indexSentence;j<lyrics.length;++j){
-      //     for(int k=indexWord;k<lyrics[j].words.length;++k){
-      //       double millisecondWord = int.parse(wordUsers[i].startTime.seconds.toString())*1000 + int.parse(wordUsers[i].startTime.nanos.toString())/1000000;
-      //       if((lyrics[j].words[k].startTime - millisecondWord).abs() <= 200 && lyrics[j].words[k].data == wordUsers[i].word){
-      //         print("word right: ${wordUsers[i].word}, in time: ${lyrics[j].words[k].startTime}");
-      //         wordRightTotal = wordRightTotal + 1;
-      //         indexSentence = j+1;
-      //         indexWord = k+1;isFound = true;break;
-      //       }
-      //     }
-      //     if(isFound) {
-      //       isFound = false;
-      //       break;
-      //     }
-      //   }
-      // }
-      // double point = (wordRightTotal/total)*10;
-      double point = 0.0;
+      final audio = await _getAudioContent('myFile.flac');
+      RecognizeResponse response = await speechToText.recognize(config, audio);
+      final List<WordInfo> wordUsers = response.results[0].alternatives.toList()[0].words;
+      int wordRightTotal = 0;
+      int total = lyrics.length;
+      bool isFound = false;
+      for(int i=0;i<wordUsers.length;++i){
+        for(int j=indexSentence;j<lyrics.length;++j){
+          for(int k=indexWord;k<lyrics[j].words.length;++k){
+            double millisecondWord = int.parse(wordUsers[i].startTime.seconds.toString())*1000 + int.parse(wordUsers[i].startTime.nanos.toString())/1000000;
+            if((lyrics[j].words[k].startTime - millisecondWord).abs() <= 200 && lyrics[j].words[k].data == wordUsers[i].word){
+              print("word right: ${wordUsers[i].word}, in time: ${lyrics[j].words[k].startTime}");
+              wordRightTotal = wordRightTotal + 1;
+              indexSentence = j+1;
+              indexWord = k+1;
+              isFound = true;
+              break;
+            }
+          }
+          if(isFound) {
+            isFound = false;
+            break;
+          }
+        }
+      }
+      double point = (wordRightTotal/total)*10;
+      // double point = 0.0;
       emit(EndKaraokeState(point));
     });
 

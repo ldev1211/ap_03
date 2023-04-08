@@ -80,7 +80,8 @@ class _KaraokePage extends State<KaraokePage> {
                 },
                 builder: (context,stateKaraoke){
                   if(stateKaraoke is KaraokeState){
-                    return ScrollablePositionedList.builder(
+                    if(stateKaraoke.sentences.isNotEmpty) {
+                      return ScrollablePositionedList.builder(
                       itemScrollController: _scrollController,
                       itemCount: stateKaraoke.sentences.length,
                       itemBuilder: (context, index) {
@@ -123,6 +124,11 @@ class _KaraokePage extends State<KaraokePage> {
                         );
                       },
                     );
+                    } else if(stateKaraoke.title == "title"){
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      return const Center(child: Text("Rất tiếc! Bài hát này không có lyric",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),));
+                    }
                   } else {
                     return Container();
                   }

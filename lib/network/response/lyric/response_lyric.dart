@@ -7,7 +7,7 @@ part 'response_lyric.g.dart';
 class ResponseLyric{
   final bool error;
   final String message;
-  final String data;
+  final String? data;
 
   ResponseLyric(this.error, this.message, this.data);
 

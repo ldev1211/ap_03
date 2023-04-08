@@ -298,7 +298,7 @@ class _MainPage extends State<MainPage> {
             ),
             BlocBuilder<PlayMusicBloc,PlayMusicState>(
               buildWhen: (previous, current) {
-                return current is PlaySongState;
+                return current is PlaySongState || current is KaraokeState;
               },
                 builder: (context,state){
                   if(state is PlaySongState) {

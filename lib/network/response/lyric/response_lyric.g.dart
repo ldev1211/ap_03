@@ -10,7 +10,7 @@ ResponseLyric _$ResponseLyricFromJson(Map<String, dynamic> json) =>
     ResponseLyric(
       json['error'] as bool,
       json['message'] as String,
-      json['data'] as String,
+      json['data'] as String?,
     );
 
 Map<String, dynamic> _$ResponseLyricToJson(ResponseLyric instance) =>
