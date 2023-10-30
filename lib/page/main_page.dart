@@ -55,6 +55,7 @@ class _MainPage extends State<MainPage> {
     return MaterialApp(
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
+      restorationScopeId: "LDev",
       theme: ThemeData(
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.white,

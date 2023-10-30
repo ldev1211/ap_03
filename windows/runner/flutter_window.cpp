@@ -56,6 +56,5 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
       flutter_controller_->engine()->ReloadSystemFonts();
       break;
   }
-
   return Win32Window::MessageHandler(hwnd, message, wparam, lparam);
 }

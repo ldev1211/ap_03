@@ -14,16 +14,19 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   shared = await SharedPreferences.getInstance();
   service = MusicService(dio.Dio());
-  runApp((shared.getString("fullName")!=null && shared.getString("fullName")!="" )?const MainPageProvider():const MyApp());
+  runApp((shared.getString("fullName") != null &&
+          shared.getString("fullName") != "")
+      ? const MainPageProvider()
+      : const MyApp());
 }
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-  };
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }
 
 class MyApp extends StatelessWidget {
@@ -34,6 +37,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      restorationScopeId: "LDev",
       scrollBehavior: MyCustomScrollBehavior(),
       theme: ThemeData(
         primarySwatch: Colors.red,
