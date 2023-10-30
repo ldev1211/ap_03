@@ -8,7 +8,7 @@ import 'package:dio/dio.dart' as dio;
 
 late SharedPreferences shared;
 late MusicService service;
-const baseUrl = "http://localhost:3002/";
+const baseUrl = "http://113.161.104.212:3002/";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
