@@ -1,24 +1,23 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:ap_03_luongquocdien/bloc/play_music/bloc.dart';
 import 'package:ap_03_luongquocdien/bloc/play_music/event.dart';
 import 'package:ap_03_luongquocdien/bloc/play_music/state.dart';
 import 'package:ap_03_luongquocdien/main.dart';
 import 'package:ap_03_luongquocdien/page/home_page.dart';
 import 'package:ap_03_luongquocdien/page/karaoke_page.dart';
+import 'package:ap_03_luongquocdien/page/login_page.dart';
 import 'package:ap_03_luongquocdien/page/new_release_page.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainPageProvider extends StatelessWidget {
   const MainPageProvider({Key? key}) : super(key: key);
 
+  static PlayMusicBloc musicBloc = PlayMusicBloc(PlayMusicState());
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PlayMusicBloc>(
-      create: (context) => PlayMusicBloc(PlayMusicState()),
+      create: (context) => musicBloc..add(InitEvent()),
       child: const MainPage(),
     );
   }
@@ -35,14 +34,6 @@ class _MainPage extends State<MainPage> {
   final pageController = PageController(initialPage: 0);
   int indexPage = 0;
   final _controller = TextEditingController();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    BlocProvider.of<PlayMusicBloc>(context).add(InitEvent());
-  }
-
   @override
   void dispose() {
     // TODO: implement dispose
@@ -55,7 +46,6 @@ class _MainPage extends State<MainPage> {
     return MaterialApp(
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
-      restorationScopeId: "LDev",
       theme: ThemeData(
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.white,
@@ -113,9 +103,9 @@ class _MainPage extends State<MainPage> {
                                     : Colors.redAccent,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(12))),
-                            child: Row(
+                            child: const Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.home_filled,
                                   color: Colors.white,
@@ -149,9 +139,9 @@ class _MainPage extends State<MainPage> {
                                     : Colors.redAccent,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(12))),
-                            child: Row(
+                            child: const Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.fiber_new_rounded,
                                   color: Colors.white,
@@ -185,9 +175,9 @@ class _MainPage extends State<MainPage> {
                                     : Colors.redAccent,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(12))),
-                            child: Row(
+                            child: const Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.mic,
                                   color: Colors.white,
@@ -223,15 +213,15 @@ class _MainPage extends State<MainPage> {
                         InkWell(
                           onTap: () {
                             shared.setString("fullName", "");
-                            Navigator.pushReplacement(
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const MyApp()));
+                                    builder: (context) => const LoginPage()));
                           },
-                          child: Row(
+                          child: const Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.logout,
                                 color: Colors.white,
@@ -258,55 +248,55 @@ class _MainPage extends State<MainPage> {
               )
             ],
           ),
-          BlocListener<PlayMusicBloc, PlayMusicState>(
-            listenWhen: (prev, curr) {
-              return curr is EndKaraokeState || curr is KaraokePointingState;
-            },
-            child: Container(),
-            listener: (context, state) {
-              if (state is EndKaraokeState) {
-                Navigator.pop(context);
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('KẾT QUẢ:'),
-                        content: SingleChildScrollView(
-                          child: ListBody(
-                            children: [
-                              Text('Điểm số: ${state.point}'),
-                            ],
-                          ),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text(
-                              'OK',
-                              style: TextStyle(color: Colors.orange),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    });
-              } else if (state is KaraokePointingState) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                        backgroundColor: Colors.transparent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [CircularProgressIndicator()],
-                        ));
-                  },
-                );
-              }
-            },
-          ),
+          // BlocListener<PlayMusicBloc, PlayMusicState>(
+          //   listenWhen: (prev, curr) {
+          //     return curr is EndKaraokeState || curr is KaraokePointingState;
+          //   },
+          //   child: Container(),
+          //   listener: (context, state) {
+          //     if (state is EndKaraokeState) {
+          //       Navigator.pop(context);
+          //       showDialog(
+          //           context: context,
+          //           builder: (context) {
+          //             return AlertDialog(
+          //               title: const Text('KẾT QUẢ:'),
+          //               content: SingleChildScrollView(
+          //                 child: ListBody(
+          //                   children: [
+          //                     Text('Điểm số: ${state.point}'),
+          //                   ],
+          //                 ),
+          //               ),
+          //               actions: <Widget>[
+          //                 TextButton(
+          //                   child: const Text(
+          //                     'OK',
+          //                     style: TextStyle(color: Colors.orange),
+          //                   ),
+          //                   onPressed: () {
+          //                     Navigator.of(context).pop();
+          //                   },
+          //                 ),
+          //               ],
+          //             );
+          //           });
+          //     } else if (state is KaraokePointingState) {
+          //       showDialog(
+          //         context: context,
+          //         barrierDismissible: false,
+          //         builder: (BuildContext context) {
+          //           return const Dialog(
+          //               backgroundColor: Colors.transparent,
+          //               child: Row(
+          //                 mainAxisAlignment: MainAxisAlignment.center,
+          //                 children: [CircularProgressIndicator()],
+          //               ));
+          //         },
+          //       );
+          //     }
+          //   },
+          // ),
           BlocBuilder<PlayMusicBloc, PlayMusicState>(
               buildWhen: (previous, current) {
             return current is PlaySongState || current is KaraokeState;
@@ -336,7 +326,7 @@ class _MainPage extends State<MainPage> {
                         }, builder: (context, state) {
                           return GestureDetector(
                               onTap: () {
-                                BlocProvider.of<PlayMusicBloc>(context).add(
+                                MainPageProvider.musicBloc.add(
                                     (state is PlaySongState ||
                                             state is ResumeSongState)
                                         ? PauseSongEvent()
@@ -426,9 +416,8 @@ class _MainPage extends State<MainPage> {
                                         max: state.total.inSeconds.toDouble(),
                                         value: 0,
                                         onChanged: (val) {
-                                          BlocProvider.of<PlayMusicBloc>(
-                                                  context)
-                                              .add(SeekEvent(Duration(
+                                          MainPageProvider.musicBloc.add(
+                                              SeekEvent(Duration(
                                                   seconds: val.toInt())));
                                         }),
                                   ),
@@ -449,9 +438,8 @@ class _MainPage extends State<MainPage> {
                                         value: state.newDuration.inSeconds
                                             .toDouble(),
                                         onChanged: (val) {
-                                          BlocProvider.of<PlayMusicBloc>(
-                                                  context)
-                                              .add(SeekEvent(Duration(
+                                          MainPageProvider.musicBloc.add(
+                                              SeekEvent(Duration(
                                                   seconds: val.toInt())));
                                         }),
                                   ),
@@ -473,9 +461,8 @@ class _MainPage extends State<MainPage> {
                                         value: state.currPosition.inSeconds
                                             .toDouble(),
                                         onChanged: (val) {
-                                          BlocProvider.of<PlayMusicBloc>(
-                                                  context)
-                                              .add(SeekEvent(Duration(
+                                          MainPageProvider.musicBloc.add(
+                                              SeekEvent(Duration(
                                                   seconds: val.toInt())));
                                         }),
                                   ),
@@ -511,7 +498,7 @@ class _MainPage extends State<MainPage> {
                                         Radius.circular(12))),
                                 child: TextField(
                                   onSubmitted: (stringSearch) {
-                                    BlocProvider.of<PlayMusicBloc>(context).add(
+                                    MainPageProvider.musicBloc.add(
                                         ChangeSpeedEvent(
                                             double.parse(_controller.text)));
                                   },
@@ -533,7 +520,7 @@ class _MainPage extends State<MainPage> {
                                       max: 1,
                                       value: state.volume,
                                       onChanged: (val) {
-                                        BlocProvider.of<PlayMusicBloc>(context)
+                                        MainPageProvider.musicBloc
                                             .add(ChangeVolumeEvent(val));
                                       });
                                 } else {
@@ -541,7 +528,7 @@ class _MainPage extends State<MainPage> {
                                       max: 1,
                                       value: 1,
                                       onChanged: (val) {
-                                        BlocProvider.of<PlayMusicBloc>(context)
+                                        MainPageProvider.musicBloc
                                             .add(ChangeVolumeEvent(val));
                                       });
                                 }
@@ -553,7 +540,7 @@ class _MainPage extends State<MainPage> {
                                 if (state is DownloadSongState) {
                                   return InkWell(
                                     onTap: () {
-                                      BlocProvider.of<PlayMusicBloc>(context)
+                                      MainPageProvider.musicBloc
                                           .add(DownloadSongEvent());
                                     },
                                     child: Container(
@@ -570,7 +557,7 @@ class _MainPage extends State<MainPage> {
                                 } else {
                                   return InkWell(
                                     onTap: () {
-                                      BlocProvider.of<PlayMusicBloc>(context)
+                                      MainPageProvider.musicBloc
                                           .add(DownloadSongEvent());
                                     },
                                     child: Container(

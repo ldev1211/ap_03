@@ -7,13 +7,12 @@ import 'network/route/music/music_service.dart';
 import 'package:dio/dio.dart' as dio;
 
 late SharedPreferences shared;
-late MusicService service;
+MusicService service = MusicService(dio.Dio());
 const baseUrl = "http://113.161.104.212:3002/";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   shared = await SharedPreferences.getInstance();
-  service = MusicService(dio.Dio());
   runApp((shared.getString("fullName") != null &&
           shared.getString("fullName") != "")
       ? const MainPageProvider()
@@ -37,7 +36,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      restorationScopeId: "LDev",
       scrollBehavior: MyCustomScrollBehavior(),
       theme: ThemeData(
         primarySwatch: Colors.red,

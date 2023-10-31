@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:ap_03_luongquocdien/main.dart';
 import 'package:ap_03_luongquocdien/network/entity/lyric/lyric_entity.dart';
 import 'package:ap_03_luongquocdien/network/route/music/music_service.dart';
 import 'package:bloc/bloc.dart';
@@ -21,7 +22,6 @@ class PlayMusicBloc extends Bloc<PlayMusicEvent, PlayMusicState> {
   late String quality;
   late String title;
   late String artist;
-  late MusicService service;
   late Duration total;
   late double volume;
   late List<Sentence> lyrics;
@@ -63,7 +63,6 @@ class PlayMusicBloc extends Bloc<PlayMusicEvent, PlayMusicState> {
 
   PlayMusicBloc(PlayMusicState initial) : super(initial) {
     on<InitEvent>((event, emit) {
-      service = MusicService(dio.Dio());
       volume = 1.0;
     });
 
